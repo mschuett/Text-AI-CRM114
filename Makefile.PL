@@ -9,8 +9,7 @@ WriteMakefile(
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM  => 'lib/Text/AI/CRM114.pm', # retrieve abstract from module
        AUTHOR         => 'Martin Schuette <info@mschuette.name>') : ()),
-	#LIBS              => ['-L/usr/local/lib -lcrm114 -ltre'],
-	LIBS              => ['-lcrm114 -ltre'],
+    LIBS              => ['-lcrm114 -ltre'],
     DEFINE            => '',
 );
 if  (eval {require ExtUtils::Constant; 1}) {
