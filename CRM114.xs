@@ -85,7 +85,7 @@ int crm114_db_close_bin(CRM114_DATABLOCK *db)
     return munmap(db, db->cb.datablock_size);
 }
 
-MODULE = Text::AI::CRM114		PACKAGE = Text::AI::libcrm114		PREFIX = crm114_
+MODULE = Text::AI::CRM114		PACKAGE = Text::AI::CRM114::libcrm114		PREFIX = crm114_
 
 INCLUDE: const-xs.inc
 
@@ -94,7 +94,7 @@ PROTOTYPES: ENABLE
 BOOT:
 {
     HV *stash;
-    stash = gv_stashpv("Text::AI::libcrm114", TRUE);
+    stash = gv_stashpv("Text::AI::CRM114::libcrm114", TRUE);
     newCONSTSUB(stash, "OK",          newSViv(CRM114_OK));
     newCONSTSUB(stash, "UNK",         newSViv(CRM114_UNK));
     newCONSTSUB(stash, "BADARG",      newSViv(CRM114_BADARG));
@@ -162,12 +162,32 @@ crm114_db_getclasses(p_db)
     unsigned i = 0;
     char *name;
   PPCODE:
-    /* get all classes with names */
-    while (i < CRM114_MAX_CLASSES && (p_db->cb.class[i].name[0] != '\0')) {
+    while (i < p_db->cb.how_many_classes) {
       name = p_db->cb.class[i].name;
       XPUSHs(sv_2mortal(newSVpv(name, 0)));
       i++;
     }
+
+void
+crm114_db_setuserid_text(db, text)
+    CRM114_DATABLOCK *  db
+    SV * text
+  PREINIT:
+    size_t len;
+  CODE:
+    len = (sv_len(text) < STATISTICS_FILE_IDENT_STRING_MAX)
+		? sv_len(text)
+		: STATISTICS_FILE_IDENT_STRING_MAX;
+    strncpy(db->cb.user_identifying_text, SvPV(text, len), len);
+	db->cb.userid_text_len = len;
+  OUTPUT:
+    db
+
+void
+crm114_db_getuserid_text(db)
+    CRM114_DATABLOCK *  db
+  PPCODE:
+	XPUSHs(sv_2mortal(newSVpvn(db->cb.user_identifying_text, db->cb.userid_text_len)));
 
 void
 crm114_cb_setclassname(p_cb, num, name)
@@ -176,6 +196,15 @@ crm114_cb_setclassname(p_cb, num, name)
     char * name
   CODE:
     strcpy(p_cb->class[num].name, name);
+  OUTPUT:
+    p_cb
+
+void
+crm114_cb_set_how_many_classes(p_cb, num)
+    CRM114_CONTROLBLOCK * p_cb
+    int num
+  CODE:
+    p_cb->how_many_classes = num;
   OUTPUT:
     p_cb
 

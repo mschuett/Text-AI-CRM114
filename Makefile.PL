@@ -9,8 +9,8 @@ WriteMakefile(
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM  => 'lib/Text/AI/CRM114.pm', # retrieve abstract from module
        AUTHOR         => 'Martin Schuette <info@mschuette.name>') : ()),
-    LIBS              => ['-lcrm114 -ltre'],
-    DEFINE            => '',
+    LIBS              => ['-lcrm114 -ltre -lm'],
+    LICENSE           => 'lgpl',
 );
 if  (eval {require ExtUtils::Constant; 1}) {
   # If you edit these definitions to change the constants used by this module,
@@ -19,7 +19,7 @@ if  (eval {require ExtUtils::Constant; 1}) {
   # changes.
   my @names = (qw());
   ExtUtils::Constant::WriteConstants(
-                                     NAME         => 'Text::AI::libcrm114',
+                                     NAME         => 'Text::AI::CRM114::libcrm114',
                                      NAMES        => \@names,
                                      DEFAULT_TYPE => 're',
                                      C_FILE       => 'const-c.inc',

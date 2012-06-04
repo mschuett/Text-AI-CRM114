@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 46;
+use Test::More tests => 62;
 BEGIN { use_ok('Text::AI::CRM114') };
 use lib 't';
 BEGIN { use_ok('SampleText') };
@@ -11,7 +11,12 @@ my $db = Text::AI::CRM114->new();
 isa_ok($db, 'Text::AI::CRM114');
 can_ok($db, qw(learn classify writefile));
 
-$db = Text::AI::CRM114->new(Text::AI::CRM114::OSB, 8000000, ["Alice", "Macbeth"]);
+$db = Text::AI::CRM114->new();
+isa_ok($db, 'Text::AI::CRM114');
+$db = Text::AI::CRM114->new(classes => ["Alice", "Macbeth"]);
+isa_ok($db, 'Text::AI::CRM114');
+
+$db = Text::AI::CRM114->new(flags => Text::AI::CRM114::OSB, datasize => 8000000, classes => ["Alice", "Macbeth"]);
 isa_ok($db, 'Text::AI::CRM114');
 
 $db->learn("Alice", SampleText::Alice());
@@ -85,3 +90,27 @@ is($err, Text::AI::CRM114::OK);
 is($class, "Alice");
 is(sprintf("%.3f", $prob), "0.897");
 is(sprintf("%.6f", $pR), "0.938232");
+
+# set up with more classes
+# NB: using an empty string is obviously a bad idea, don't try this at home
+$db = Text::AI::CRM114->new(classes => ["Alice", "Macbeth", "Something", "Else", ""]);
+isa_ok($db, 'Text::AI::CRM114');
+%classes = %{$db->getclasses()};
+isa_ok(\%classes, 'HASH', "getclasses()");
+ok(defined($classes{"Alice"}));
+ok(defined($classes{"Macbeth"}));
+ok(defined($classes{"Something"}));
+ok(defined($classes{"Else"}));
+ok(defined($classes{""}));
+is($classes{"Alice"},     0);
+is($classes{"Macbeth"},   1);
+is($classes{"Something"}, 2);
+is($classes{"Else"},      3);
+is($classes{""},          4);
+is(scalar(keys(%classes)), 5);
+
+$db->learn("Alice", SampleText::Alice());
+$db->learn("Macbeth", SampleText::Macbeth());
+($err, $class, $prob, $pR) = $db->classify(SampleText::Willows_frag());
+is($err, Text::AI::CRM114::OK);
+
