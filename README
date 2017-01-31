@@ -1,5 +1,5 @@
-Text-AI-libcrm114 version 0.05
-==============================
+Text-AI-CRM114 version 0.06
+===========================
 
 This is a Perl interface for the libcrm114 classification library.
 
@@ -16,6 +16,10 @@ DEPENDENCIES
 
 This module requires libcrm114 (http://crm114.sourceforge.net/wiki/doku.php?id=download),
 which in turn depends on libtre (http://laurikari.net/tre/download/).
+
+MATURITY
+
+Please consider this whole library an abandoned proof of concept.
 
 COPYRIGHT AND LICENCE
 

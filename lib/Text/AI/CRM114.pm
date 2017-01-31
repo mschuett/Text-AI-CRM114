@@ -6,7 +6,7 @@ package Text::AI::CRM114::libcrm114;
 BEGIN {
     # execute first, so all constants are defined
     require XSLoader;
-    our $VERSION = '0.05';
+    our $VERSION = '0.06';
     XSLoader::load('Text::AI::CRM114', $VERSION);
 }
 

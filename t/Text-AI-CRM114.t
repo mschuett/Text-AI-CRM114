@@ -1,6 +1,8 @@
 use strict;
 use warnings;
 
+use File::Temp qw/ tmpnam /;
+
 use Test::More tests => 62;
 BEGIN { use_ok('Text::AI::CRM114') };
 use lib 't';
@@ -22,7 +24,7 @@ isa_ok($db, 'Text::AI::CRM114');
 $db->learn("Alice", SampleText::Alice());
 $db->learn("Macbeth", SampleText::Macbeth());
 
-my $filename = "/tmp/sample.db";
+my ($fh, $filename) = tmpnam();
 my $rc = $db->writefile($filename);
 is($rc, Text::AI::CRM114::OK, "writefile");
 undef $db;
